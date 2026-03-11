@@ -12,7 +12,7 @@ const config: Config = {
   },
 
   url: 'https://synapsekit.github.io',
-  baseUrl: '/',
+  baseUrl: '/synapsekit-docs/',
 
   organizationName: 'SynapseKit',
   projectName: 'synapsekit-docs',
