@@ -62,17 +62,32 @@ sidebar_position: 99
 - **`_MAX_STEPS = 100`** guard against infinite conditional loops
 - 267 tests, all passing
 
-## Phase 5 — Structured Output + Evaluation 🔜
+## Phase 5 — Production Features ✅ Done
+
+- **Text Splitters** — `BaseSplitter` ABC, `CharacterTextSplitter`, `RecursiveCharacterTextSplitter`, `TokenAwareSplitter`, `SemanticSplitter` (cosine similarity boundaries)
+- **Function calling for Gemini + Mistral** — `call_with_tools()` added to `GeminiLLM` and `MistralLLM` (4 providers now support native tool use)
+- **LLM Response Caching** — `AsyncLRUCache` with SHA-256 cache keys, opt-in via `LLMConfig(cache=True)`
+- **LLM Retries** — exponential backoff via `retry_async()`, skips auth errors, opt-in via `LLMConfig(max_retries=N)`
+- **Graph Cycles** — `compile(allow_cycles=True)` skips static cycle detection for intentional loops
+- **Configurable max_steps** — `compile(max_steps=N)` overrides the default 100-step guard
+- **Graph Checkpointing** — `BaseCheckpointer` ABC, `InMemoryCheckpointer`, `SQLiteCheckpointer`
+- **`CompiledGraph.resume()`** — re-execute from saved state
+- **Adjacency optimization** — pre-built index for faster edge lookup
+- **`RAGConfig.splitter`** — plug any `BaseSplitter` into the RAG pipeline
+- 332 tests, all passing
+
+## Phase 6 — Structured Output + Evaluation 🔜
 
 - Pydantic model output with retry on parse failure
 - `Evaluator` — faithfulness, relevancy, groundedness
 - RAGAS-style metrics
-- CLI: `synapsekit benchmark --vs langchain`
+- Multi-modal support (image inputs for vision models)
+- Conversation branching and tree-of-thought
 
-## Phase 6 — Platform 🔜
+## Phase 7 — Platform 🔜
 
 - Local observability UI (LangSmith-style, open source)
 - Streaming UI helpers — SSE + WebSocket for FastAPI
-- Multi-modal support
 - `synapsekit serve` — deploy any app as FastAPI in one command
 - Prompt hub — versioned prompt registry
+- Plugin system for community extensions

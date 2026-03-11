@@ -63,7 +63,7 @@ InMemoryVectorStore (built-in, `.npz` persistence), ChromaDB, FAISS, Qdrant, Pin
 ### Agents
 
 `ReActAgent` — Thought → Action → Observation loop, works with any LLM.
-`FunctionCallingAgent` — native `tool_calls` / `tool_use` for OpenAI and Anthropic.
+`FunctionCallingAgent` — native `tool_calls` / `tool_use` for OpenAI, Anthropic, Gemini, and Mistral.
 `AgentExecutor` — unified runner, picks the right agent from config.
 5 built-in tools: Calculator, PythonREPL, FileRead, WebSearch, SQL.
 
@@ -71,8 +71,8 @@ InMemoryVectorStore (built-in, `.npz` persistence), ChromaDB, FAISS, Qdrant, Pin
 
 ### Graph Workflows
 
-`StateGraph` — fluent DAG builder with compile-time validation and cycle detection.
-`CompiledGraph` — wave-based async executor. Parallel nodes via `asyncio.gather`. Conditional routing. Mermaid export.
+`StateGraph` — fluent graph builder with compile-time validation, optional cycle support, and configurable step limits.
+`CompiledGraph` — wave-based async executor. Parallel nodes via `asyncio.gather`. Conditional routing, checkpointing, and Mermaid export.
 
 → [Graph docs](/docs/graph/overview)
 
@@ -84,4 +84,4 @@ Output parsers (JSON, Pydantic, List), prompt templates (standard, chat, few-sho
 
 ## Version
 
-Current version: **0.4.0** — see the [Changelog](https://github.com/SynapseKit/SynapseKit/blob/main/CHANGELOG.md) and [Roadmap](/docs/roadmap).
+Current version: **0.5.0** — see the [Changelog](https://github.com/SynapseKit/SynapseKit/blob/main/CHANGELOG.md) and [Roadmap](/docs/roadmap).

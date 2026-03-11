@@ -8,7 +8,7 @@ sidebar_position: 3
 
 ## Requirements
 
-- `OpenAILLM` or `AnthropicLLM` (both support `call_with_tools()`)
+- `OpenAILLM`, `AnthropicLLM`, `GeminiLLM`, or `MistralLLM` (all support `call_with_tools()`)
 - For other providers, use `ReActAgent` instead
 
 ## Usage
@@ -50,6 +50,38 @@ llm = AnthropicLLM(LLMConfig(
 
 agent = FunctionCallingAgent(llm=llm, tools=[CalculatorTool()])
 answer = await agent.run("What is 144 / 12?")
+```
+
+## Gemini example
+
+```python
+from synapsekit.llm.gemini import GeminiLLM
+from synapsekit.llm.base import LLMConfig
+
+llm = GeminiLLM(LLMConfig(
+    model="gemini-1.5-pro",
+    api_key="your-google-api-key",
+    provider="gemini",
+))
+
+agent = FunctionCallingAgent(llm=llm, tools=[CalculatorTool()])
+answer = await agent.run("What is 2 to the power of 10?")
+```
+
+## Mistral example
+
+```python
+from synapsekit.llm.mistral import MistralLLM
+from synapsekit.llm.base import LLMConfig
+
+llm = MistralLLM(LLMConfig(
+    model="mistral-large-latest",
+    api_key="your-mistral-key",
+    provider="mistral",
+))
+
+agent = FunctionCallingAgent(llm=llm, tools=[CalculatorTool()])
+answer = await agent.run("What is the square root of 256?")
 ```
 
 ## Parameters

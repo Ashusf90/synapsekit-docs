@@ -78,7 +78,7 @@ Shorthand for `add_edge(name, END)`.
 graph.set_finish_point("summarize")
 ```
 
-### `compile()`
+### `compile(allow_cycles=False, max_steps=None)`
 
 Validate the graph and return a `CompiledGraph`.
 
@@ -86,10 +86,22 @@ Validate the graph and return a `CompiledGraph`.
 compiled = graph.compile()
 ```
 
+Parameters:
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `allow_cycles` | `bool` | `False` | Skip static cycle detection (for intentional loops) |
+| `max_steps` | `int \| None` | `None` (uses `_MAX_STEPS=100`) | Maximum execution waves |
+
 Raises `GraphConfigError` if:
 - No entry point is set
 - An unknown node is referenced in an edge
-- A cycle exists in static edges
+- A cycle exists in static edges (unless `allow_cycles=True`)
+
+```python
+# Allow cycles with a custom step limit
+compiled = graph.compile(allow_cycles=True, max_steps=50)
+```
 
 ## Full example
 

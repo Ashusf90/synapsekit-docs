@@ -30,8 +30,15 @@ config = LLMConfig(
     system_prompt="You are a helpful assistant.",
     temperature=0.2,
     max_tokens=1024,
+    # Optional: caching and retries
+    cache=False,          # Enable LRU response caching
+    cache_maxsize=128,    # Max cached responses
+    max_retries=0,        # Retry attempts (0 = disabled)
+    retry_delay=1.0,      # Initial retry delay in seconds
 )
 ```
+
+See [Caching & Retries](/docs/llms/caching-retries) for details on response caching and exponential backoff.
 
 ## Available providers
 

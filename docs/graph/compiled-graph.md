@@ -6,7 +6,7 @@ sidebar_position: 5
 
 `CompiledGraph` is the runnable object returned by `StateGraph.compile()`. It exposes three execution modes and a Mermaid diagram helper.
 
-## `run(state)` — async
+## `run(state, checkpointer=None, graph_id=None)` — async
 
 Run the graph to completion and return the final state dict.
 
@@ -16,6 +16,15 @@ print(result["output"])
 ```
 
 The `state` dict you pass is **not** mutated — the graph works on an internal copy.
+
+With checkpointing:
+
+```python
+from synapsekit import InMemoryCheckpointer
+
+cp = InMemoryCheckpointer()
+result = await graph.run({"input": "hello"}, checkpointer=cp, graph_id="run-1")
+```
 
 ## `stream(state)` — async generator
 
@@ -76,6 +85,22 @@ except GraphRuntimeError as e:
     print(f"Runtime failure: {e}")
 ```
 
+## `resume(graph_id, checkpointer)` — async
+
+Resume execution from a previously checkpointed state:
+
+```python
+result = await graph.resume("run-1", cp)
+```
+
+Raises `GraphRuntimeError` if no checkpoint exists for the given `graph_id`. See [Checkpointing](/docs/graph/checkpointing) for details.
+
 ## _MAX_STEPS guard
 
-The engine tracks the number of execution waves. If it exceeds `_MAX_STEPS = 100`, a `GraphRuntimeError` is raised. This guards against infinite loops created by conditional edges that always route back to a previous node.
+The engine tracks the number of execution waves. The default limit is `_MAX_STEPS = 100`. Override it at compile time:
+
+```python
+compiled = graph.compile(max_steps=500)
+```
+
+If the limit is exceeded, a `GraphRuntimeError` is raised. This guards against infinite loops created by conditional edges that always route back to a previous node. See [Cycles](/docs/graph/cycles) for more.

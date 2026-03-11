@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Graph Workflows Overview
 
-Graph Workflows let you define async pipelines as **directed acyclic graphs (DAGs)**. Nodes are async functions; edges wire them together. The engine executes nodes wave by wave — parallel nodes run concurrently via `asyncio.gather()`.
+Graph Workflows let you define async pipelines as **directed graphs**. Nodes are async functions; edges wire them together. The engine executes nodes wave by wave — parallel nodes run concurrently via `asyncio.gather()`. Cycles are supported for iterative workflows, and state can be checkpointed for resumability.
 
 ## Core concepts
 
@@ -84,10 +84,42 @@ graph = (
 )
 ```
 
+## Cycles
+
+By default, static cycles raise `GraphConfigError`. For intentional loops, pass `allow_cycles=True`:
+
+```python
+graph = (
+    StateGraph()
+    .add_node("process", process_fn)
+    .add_conditional_edge("process", should_continue, {"loop": "process", "done": END})
+    .set_entry_point("process")
+    .compile(allow_cycles=True, max_steps=50)
+)
+```
+
+→ [Cycles docs](/docs/graph/cycles)
+
+## Checkpointing
+
+Persist graph state after each wave for resumability:
+
+```python
+from synapsekit import InMemoryCheckpointer
+
+cp = InMemoryCheckpointer()
+result = await graph.run({"input": "data"}, checkpointer=cp, graph_id="run-1")
+
+# Resume later
+result = await graph.resume("run-1", cp)
+```
+
+→ [Checkpointing docs](/docs/graph/checkpointing)
+
 ## What's validated at compile time
 
 - Entry point is set and refers to a registered node
 - All edge sources and destinations refer to registered nodes (or `END`)
-- No cycles in static edges (DFS)
+- No cycles in static edges (unless `allow_cycles=True`)
 
 Conditional edge destinations are validated at compile time; the routing itself is resolved at runtime.

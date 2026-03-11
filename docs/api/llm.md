@@ -30,7 +30,28 @@ class LLMConfig:
     system_prompt: str = "You are a helpful assistant."
     temperature: float = 0.2
     max_tokens: int = 1024
+    # Caching (v0.5.0)
+    cache: bool = False
+    cache_maxsize: int = 128
+    # Retries (v0.5.0)
+    max_retries: int = 0
+    retry_delay: float = 1.0
 ```
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `model` | `str` | required | Model name |
+| `api_key` | `str` | required | API key |
+| `provider` | `str` | required | Provider string (`"openai"`, `"anthropic"`, etc.) |
+| `system_prompt` | `str` | `"You are a helpful assistant."` | System instruction |
+| `temperature` | `float` | `0.2` | Sampling temperature |
+| `max_tokens` | `int` | `1024` | Maximum output tokens |
+| `cache` | `bool` | `False` | Enable LRU response caching |
+| `cache_maxsize` | `int` | `128` | Maximum cached responses |
+| `max_retries` | `int` | `0` | Retry attempts with exponential backoff |
+| `retry_delay` | `float` | `1.0` | Initial retry delay in seconds |
+
+See [Caching & Retries](/docs/llms/caching-retries) for usage details.
 
 ## Provider classes
 
@@ -51,3 +72,22 @@ LLM(config: LLMConfig)
 ```
 
 `BedrockLLM` accepts an additional optional `region: str = "us-east-1"` argument.
+
+## `call_with_tools()`
+
+Available on providers that support native function calling:
+
+| Provider | `call_with_tools()` |
+|---|---|
+| `OpenAILLM` | ✅ |
+| `AnthropicLLM` | ✅ |
+| `GeminiLLM` | ✅ (v0.5.0) |
+| `MistralLLM` | ✅ (v0.5.0) |
+| `OllamaLLM` | ❌ — use `ReActAgent` |
+| `CohereLLM` | ❌ — use `ReActAgent` |
+| `BedrockLLM` | ❌ — use `ReActAgent` |
+
+```python
+result = await llm.call_with_tools(messages, tools)
+# Returns: {"content": str | None, "tool_calls": list | None}
+```

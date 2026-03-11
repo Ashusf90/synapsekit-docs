@@ -33,6 +33,7 @@ const sidebars: SidebarsConfig = {
         'llms/mistral',
         'llms/gemini',
         'llms/bedrock',
+        'llms/caching-retries',
       ],
     },
     {
@@ -55,6 +56,8 @@ const sidebars: SidebarsConfig = {
         'graph/nodes',
         'graph/edges',
         'graph/compiled-graph',
+        'graph/cycles',
+        'graph/checkpointing',
         'graph/mermaid',
       ],
     },
