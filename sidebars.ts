@@ -11,12 +11,40 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'RAG',
-      items: ['rag/pipeline', 'rag/loaders', 'rag/splitter', 'rag/retriever'],
+      items: [
+        'rag/pipeline',
+        'rag/loaders',
+        'rag/splitter',
+        'rag/retriever',
+        'rag/vector-stores',
+        'rag/parsers',
+        'rag/prompts',
+      ],
     },
     {
       type: 'category',
       label: 'LLMs',
-      items: ['llms/overview', 'llms/openai', 'llms/anthropic'],
+      items: [
+        'llms/overview',
+        'llms/openai',
+        'llms/anthropic',
+        'llms/ollama',
+        'llms/cohere',
+        'llms/mistral',
+        'llms/gemini',
+        'llms/bedrock',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Agents',
+      items: [
+        'agents/overview',
+        'agents/react',
+        'agents/function-calling',
+        'agents/tools',
+        'agents/executor',
+      ],
     },
     {
       type: 'category',

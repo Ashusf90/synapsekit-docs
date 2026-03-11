@@ -37,6 +37,17 @@ answer = await rag.ask("What is the main topic?")
 answer = rag.ask_sync("What is the main topic?")
 ```
 
+## What's included
+
+**Phase 2 is complete.** SynapseKit now ships:
+
+- **7 LLM providers** — OpenAI, Anthropic, Ollama, Cohere, Mistral, Gemini, AWS Bedrock
+- **8 document loaders** — Text, String, PDF, HTML, CSV, JSON, Directory, Web
+- **3 output parsers** — JSON, Pydantic, List
+- **3 prompt templates** — PromptTemplate, ChatPromptTemplate, FewShotPromptTemplate
+- **5 vector store backends** — InMemory, Chroma, FAISS, Qdrant, Pinecone
+- **Full RAG pipeline** — chunking, embedding, retrieval, BM25 rerank, streaming, memory, tracing
+
 ## Design principles
 
 1. `stream()` is always primary — `generate()` is just `"".join([...async for...])`

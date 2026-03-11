@@ -44,20 +44,77 @@ answer = rag.ask_sync("Summarize the document.")
 print(answer)
 ```
 
-## Loading multiple documents
+## Using a local model with Ollama
 
 ```python
 from synapsekit import RAG
-from synapsekit.loaders import TextLoader
+
+rag = RAG(model="llama3", api_key="", provider="ollama")
+rag.add("Your document text here")
+
+answer = rag.ask_sync("Summarize the document.")
+```
+
+## Loading documents
+
+```python
+from synapsekit import RAG, TextLoader, PDFLoader, CSVLoader, DirectoryLoader
 
 rag = RAG(model="gpt-4o-mini", api_key="sk-...")
 
-loader = TextLoader("path/to/file.txt")
-docs = loader.load()
-for doc in docs:
-    rag.add(doc.text)
+# Text file
+docs = TextLoader("notes.txt").load()
+rag.add_documents(docs)
 
-answer = rag.ask_sync("What is this document about?")
+# PDF — one Document per page
+docs = PDFLoader("report.pdf").load()
+rag.add_documents(docs)
+
+# CSV — one Document per row
+docs = CSVLoader("data.csv", text_column="content").load()
+rag.add_documents(docs)
+
+# Whole directory (auto-detects .txt, .pdf, .csv, .json, .html)
+docs = DirectoryLoader("./my_docs/").load()
+rag.add_documents(docs)
+
+answer = rag.ask_sync("What did I just load?")
+```
+
+## Fetching a web page
+
+```python
+import asyncio
+from synapsekit import RAG, WebLoader
+
+async def main():
+    docs = await WebLoader("https://example.com").load()
+    rag = RAG(model="gpt-4o-mini", api_key="sk-...")
+    rag.add_documents(docs)
+    print(await rag.ask("What is this page about?"))
+
+asyncio.run(main())
+```
+
+## Parsing LLM output
+
+```python
+from synapsekit import JSONParser, ListParser
+from synapsekit import PydanticParser
+from pydantic import BaseModel
+
+# Extract JSON from any LLM response
+data = JSONParser().parse('Result: {"score": 9, "label": "positive"}')
+
+# Parse a numbered or bullet list
+items = ListParser().parse("1. First item\n2. Second item\n3. Third item")
+
+# Parse into a Pydantic model
+class Review(BaseModel):
+    score: int
+    label: str
+
+review = PydanticParser(Review).parse('{"score": 9, "label": "positive"}')
 ```
 
 ## What happens under the hood

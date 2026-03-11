@@ -21,24 +21,35 @@ sidebar_position: 99
 - `run_sync()` — works inside/outside event loops
 - 52 tests, all passing
 
-## Phase 2 — Own the Niche 🔜
+## Phase 2 — Own the Niche ✅ Done
 
-**Goal: be the undisputed best async RAG library.**
+- **Loaders**: `PDFLoader`, `HTMLLoader`, `CSVLoader`, `JSONLoader`, `DirectoryLoader`, `WebLoader`
+- **Output parsers**: `JSONParser`, `PydanticParser`, `ListParser`
+- **Vector store backends**: `ChromaVectorStore`, `FAISSVectorStore`, `QdrantVectorStore`, `PineconeVectorStore`
+- **LLM providers**: `OllamaLLM`, `CohereLLM`, `MistralLLM`, `GeminiLLM`, `BedrockLLM`
+- **Prompt templates**: `PromptTemplate`, `ChatPromptTemplate`, `FewShotPromptTemplate`
+- **VectorStore ABC** — all backends share one interface
+- `Retriever.add()` — cleaner API, no internal `_store` access
+- `RAGPipeline.add_documents(docs)` — ingest `List[Document]` directly
+- `RAG.add_documents()` + `RAG.add_documents_async()`
+- 141 tests, all passing
 
-- More loaders: `PDFLoader`, `HTMLLoader`, `CSVLoader`, `JSONLoader`, `DirectoryLoader`, `WebLoader`
-- Output parsers: `JSONParser`, `PydanticParser`, `ListParser`
-- More vector stores: `ChromaVectorStore`, `FAISSVectorStore`, `QdrantVectorStore`, `PineconeVectorStore`
-- More LLMs: `OllamaLLM`, `CohereLLM`, `MistralLLM`, `GeminiLLM`, `BedrockLLM`
-- Prompt templates: `PromptTemplate`, `ChatPromptTemplate`, `FewShotPromptTemplate`
-- Public benchmark suite vs LangChain / LlamaIndex
+## Phase 3 — Agents ✅ Done
 
-## Phase 3 — Agents 🔜
-
-- `BaseTool` ABC + tool registry
-- `ReActAgent` — Reasoning + Acting loop
-- `FunctionCallingAgent` — native OpenAI/Anthropic tool use
-- `AgentExecutor` + `AgentMemory`
-- Built-in tools: `WebSearchTool`, `CalculatorTool`, `PythonREPLTool`, `FileReadTool`, `SQLQueryTool`
+- **`BaseTool` ABC** — `run()`, `schema()`, `anthropic_schema()`, `ToolResult`
+- **`ToolRegistry`** — lookup by name, OpenAI + Anthropic schema generation
+- **`AgentMemory`** — step scratchpad, `format_scratchpad()`, max_steps limit
+- **`ReActAgent`** — Thought → Action → Observation loop, any `BaseLLM`, no function calling required
+- **`FunctionCallingAgent`** — native OpenAI tool_calls / Anthropic tool_use, multi-tool per step
+- **`AgentExecutor`** — unified runner, `run()` / `stream()` / `run_sync()`, picks agent from config
+- **`call_with_tools()`** — added to `OpenAILLM` and `AnthropicLLM`
+- **Built-in tools**:
+  - `CalculatorTool` — safe math eval, no deps
+  - `PythonREPLTool` — exec with persistent namespace, stdout capture
+  - `FileReadTool` — read local files
+  - `WebSearchTool` — DuckDuckGo search, no API key (`pip install synapsekit[search]`)
+  - `SQLQueryTool` — SQLite (stdlib) + SQLAlchemy for other databases
+- 223 tests, all passing
 
 ## Phase 4 — Graph Workflows 🔜
 
