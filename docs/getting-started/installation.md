@@ -12,16 +12,38 @@ SynapseKit uses optional dependency groups so you only install what you need.
 
 ## Install
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="pkg-manager">
+<TabItem value="pip" label="pip">
+
 ```bash
-# OpenAI
-pip install synapsekit[openai]
-
-# Anthropic / Claude
-pip install synapsekit[anthropic]
-
-# All providers and loaders
-pip install synapsekit[all]
+pip install synapsekit[openai]       # OpenAI
+pip install synapsekit[anthropic]    # Anthropic
+pip install synapsekit[all]          # Everything
 ```
+
+</TabItem>
+<TabItem value="uv" label="uv">
+
+```bash
+uv add synapsekit[openai]            # OpenAI
+uv add synapsekit[anthropic]         # Anthropic
+uv add synapsekit[all]               # Everything
+```
+
+</TabItem>
+<TabItem value="poetry" label="Poetry">
+
+```bash
+poetry add synapsekit[openai]        # OpenAI
+poetry add synapsekit[anthropic]     # Anthropic
+poetry add "synapsekit[all]"         # Everything
+```
+
+</TabItem>
+</Tabs>
 
 ## Optional extras
 
@@ -62,17 +84,36 @@ pip install synapsekit[all]
 
 ## Combining extras
 
-```bash
-# OpenAI + PDF + Chroma
-pip install synapsekit[openai,pdf,chroma]
+<Tabs groupId="pkg-manager">
+<TabItem value="pip" label="pip">
 
-# Ollama + FAISS (fully local)
+```bash
+pip install synapsekit[openai,pdf,chroma]
 pip install synapsekit[ollama,faiss,semantic]
 ```
+
+</TabItem>
+<TabItem value="uv" label="uv">
+
+```bash
+uv add synapsekit[openai,pdf,chroma]
+uv add synapsekit[ollama,faiss,semantic]
+```
+
+</TabItem>
+<TabItem value="poetry" label="Poetry">
+
+```bash
+poetry add "synapsekit[openai,pdf,chroma]"
+poetry add "synapsekit[ollama,faiss,semantic]"
+```
+
+</TabItem>
+</Tabs>
 
 ## Verify installation
 
 ```python
 import synapsekit
-print(synapsekit.__version__)  # 0.2.0
+print(synapsekit.__version__)  # 0.4.0
 ```

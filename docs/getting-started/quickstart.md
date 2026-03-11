@@ -15,9 +15,32 @@ This page gets you from install to a working LLM application in under 5 minutes.
 
 ## 1. Install
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="pkg-manager">
+<TabItem value="pip" label="pip">
+
 ```bash
 pip install synapsekit[openai]
 ```
+
+</TabItem>
+<TabItem value="uv" label="uv">
+
+```bash
+uv add synapsekit[openai]
+```
+
+</TabItem>
+<TabItem value="poetry" label="Poetry">
+
+```bash
+poetry add synapsekit[openai]
+```
+
+</TabItem>
+</Tabs>
 
 ---
 
