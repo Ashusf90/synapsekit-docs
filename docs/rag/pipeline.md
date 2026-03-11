@@ -25,28 +25,22 @@ async for token in rag.stream("Your question?"):
 answer = rag.ask_sync("Your question?")
 ```
 
-## Using `RAGPipeline` directly
-
-For full control:
+## Loading documents
 
 ```python
-from synapsekit.pipeline import RAGPipeline
-from synapsekit.llms import OpenAILLM, LLMConfig
-from synapsekit.embeddings import SynapsekitEmbeddings
-from synapsekit.vectorstore import InMemoryVectorStore
-from synapsekit.retriever import Retriever
-from synapsekit.splitter import TextSplitter
+from synapsekit import RAG, PDFLoader, DirectoryLoader
 
-llm = OpenAILLM(LLMConfig(model="gpt-4o-mini", api_key="sk-..."))
-embeddings = SynapsekitEmbeddings()
-store = InMemoryVectorStore(embeddings)
-retriever = Retriever(store)
-splitter = TextSplitter()
+rag = RAG(model="gpt-4o-mini", api_key="sk-...")
 
-pipeline = RAGPipeline(llm=llm, retriever=retriever, splitter=splitter)
+# From a loader (List[Document])
+rag.add_documents(PDFLoader("report.pdf").load())
 
-pipeline.add("Your document text...")
-answer = await pipeline.ask("Your question?")
+# Entire directory
+rag.add_documents(DirectoryLoader("./docs/").load())
+
+# Async versions
+await rag.add_async("raw text string")
+await rag.add_documents_async(docs)
 ```
 
 ## Persistence
@@ -54,9 +48,54 @@ answer = await pipeline.ask("Your question?")
 Save and load your vector store across sessions:
 
 ```python
-# Save
-store.save("my_store.npz")
+rag.save("my_store.npz")
 
-# Load
-store = InMemoryVectorStore.load("my_store.npz", embeddings)
+# Later
+rag.load("my_store.npz")
 ```
+
+## Using `RAGPipeline` directly
+
+For full control over every component:
+
+```python
+from synapsekit.rag.pipeline import RAGConfig, RAGPipeline
+from synapsekit.llm.openai import OpenAILLM
+from synapsekit.llm.base import LLMConfig
+from synapsekit import SynapsekitEmbeddings, InMemoryVectorStore, Retriever
+from synapsekit.memory.conversation import ConversationMemory
+from synapsekit.observability.tracer import TokenTracer
+
+llm = OpenAILLM(LLMConfig(model="gpt-4o-mini", api_key="sk-..."))
+embeddings = SynapsekitEmbeddings()
+store = InMemoryVectorStore(embeddings)
+retriever = Retriever(store, rerank=True)
+
+pipeline = RAGPipeline(RAGConfig(
+    llm=llm,
+    retriever=retriever,
+    memory=ConversationMemory(window=10),
+    tracer=TokenTracer(model="gpt-4o-mini"),
+    retrieval_top_k=5,
+    chunk_size=512,
+    chunk_overlap=50,
+))
+
+await pipeline.add("Your document text...")
+await pipeline.add_documents(docs)   # List[Document]
+
+answer = await pipeline.ask("Your question?")
+```
+
+## RAGConfig reference
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `llm` | `BaseLLM` | required | LLM provider |
+| `retriever` | `Retriever` | required | Vector store + retrieval logic |
+| `memory` | `ConversationMemory` | required | Conversation history |
+| `tracer` | `TokenTracer \| None` | `None` | Token/latency tracking |
+| `retrieval_top_k` | `int` | `5` | Chunks to retrieve per query |
+| `system_prompt` | `str` | `"Answer using only..."` | LLM system instruction |
+| `chunk_size` | `int` | `512` | Max characters per chunk |
+| `chunk_overlap` | `int` | `50` | Overlap between chunks |
