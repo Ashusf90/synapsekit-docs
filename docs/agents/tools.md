@@ -157,3 +157,161 @@ tool = SQLQueryTool("postgresql://user:pass@localhost/mydb")
 ```
 
 Only `SELECT` queries are allowed. `INSERT`, `UPDATE`, `DROP`, etc. return an error.
+
+---
+
+## HTTPRequestTool
+
+Make HTTP requests (GET, POST, PUT, DELETE, PATCH).
+
+```bash
+pip install aiohttp
+```
+
+```python
+from synapsekit import HTTPRequestTool
+
+tool = HTTPRequestTool(max_response_length=10000, timeout=30)
+
+# GET request
+r = await tool.run(url="https://api.github.com/repos/SynapseKit/SynapseKit")
+# r.output → "HTTP 200\n{...}"
+
+# POST request
+r = await tool.run(
+    url="https://httpbin.org/post",
+    method="POST",
+    body='{"key": "value"}',
+    headers={"Content-Type": "application/json"},
+)
+```
+
+---
+
+## FileWriteTool
+
+Write content to a file on disk. Creates parent directories if needed.
+
+```python
+from synapsekit import FileWriteTool
+
+tool = FileWriteTool()
+
+# Write a new file
+r = await tool.run(path="output/result.txt", content="Hello world!")
+# r.output → "Written to output/result.txt (12 chars)"
+
+# Append to existing file
+r = await tool.run(path="log.txt", content="New line\n", append=True)
+# r.output → "Appended to log.txt (9 chars)"
+```
+
+---
+
+## FileListTool
+
+List files and directories at a given path.
+
+```python
+from synapsekit import FileListTool
+
+tool = FileListTool()
+
+# List current directory
+r = await tool.run(path=".")
+# r.output → "file1.txt\nfile2.py\nsubdir/"
+
+# Filter by pattern
+r = await tool.run(path="./src", pattern="*.py")
+
+# Recursive listing
+r = await tool.run(path="./src", recursive=True, pattern="*.py")
+```
+
+---
+
+## DateTimeTool
+
+Get current date/time or parse/format dates.
+
+```python
+from synapsekit import DateTimeTool
+
+tool = DateTimeTool()
+
+# Current time (local)
+r = await tool.run(action="now")
+# r.output → "2026-03-12T14:30:00.123456"
+
+# Current time (UTC)
+r = await tool.run(action="now", tz="utc")
+
+# With custom format
+r = await tool.run(action="now", fmt="%B %d, %Y")
+# r.output → "March 12, 2026"
+
+# Parse a date string
+r = await tool.run(action="parse", value="2026-03-12T10:30:00")
+
+# Format a date
+r = await tool.run(action="format", value="2026-03-12T10:30:00", fmt="%B %d, %Y")
+# r.output → "March 12, 2026"
+```
+
+---
+
+## RegexTool
+
+Apply regex operations: findall, match, search, replace, split.
+
+```python
+from synapsekit import RegexTool
+
+tool = RegexTool()
+
+# Find all matches
+r = await tool.run(pattern=r"\d+", text="abc 123 def 456")
+# r.output → "123\n456"
+
+# Search with groups
+r = await tool.run(pattern=r"(\d+)-(\d+)", text="range: 10-20", action="search")
+# r.output → "Found: 10-20\nPosition: 7-12\nGroups: ('10', '20')"
+
+# Replace
+r = await tool.run(pattern=r"\d+", text="abc 123", action="replace", replacement="NUM")
+# r.output → "abc NUM"
+
+# Split
+r = await tool.run(pattern=r",\s*", text="a, b, c", action="split")
+
+# Case insensitive
+r = await tool.run(pattern="hello", text="Hello World", action="findall", flags="i")
+```
+
+Supported flags: `i` (ignore case), `m` (multiline), `s` (dotall).
+
+---
+
+## JSONQueryTool
+
+Query JSON data using dot-notation paths (like jq).
+
+```python
+from synapsekit import JSONQueryTool
+
+tool = JSONQueryTool()
+
+data = '{"users": [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}]}'
+
+# Get a nested value
+r = await tool.run(json_data=data, path="users.0.name")
+# r.output → "Alice"
+
+# Get an array element
+r = await tool.run(json_data=data, path="users.1")
+# r.output → '{"name": "Bob", "age": 25}'
+
+# Get a top-level key
+r = await tool.run(json_data=data, path="users")
+# r.output → '[{"name": "Alice", ...}, ...]'
+```

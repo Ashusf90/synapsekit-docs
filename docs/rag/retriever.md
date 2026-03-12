@@ -88,6 +88,64 @@ The process:
 3. Results are fused using Reciprocal Rank Fusion scoring
 4. Documents appearing in multiple result sets rank higher
 
+## Contextual Retrieval
+
+Inspired by Anthropic's Contextual Retrieval approach. Before embedding, each chunk is enriched with a short LLM-generated context sentence, improving accuracy for ambiguous chunks:
+
+```python
+from synapsekit import ContextualRetriever
+
+cr = ContextualRetriever(
+    retriever=retriever,
+    llm=llm,
+)
+
+# Add chunks — each gets a context sentence prepended before embedding
+await cr.add_with_context(["chunk one...", "chunk two..."])
+
+# Retrieve as normal
+results = await cr.retrieve("What is quantum computing?", top_k=5)
+```
+
+The process:
+1. For each chunk, the LLM generates a 1-2 sentence context
+2. The context is prepended to the chunk before embedding
+3. At retrieval time, the enriched embeddings improve search accuracy
+
+You can customize the context generation prompt:
+
+```python
+cr = ContextualRetriever(
+    retriever=retriever,
+    llm=llm,
+    context_prompt="Summarize this chunk in one sentence:\n{chunk}",
+)
+```
+
+## Sentence Window Retrieval
+
+Embeds individual sentences for fine-grained search, but returns a window of surrounding sentences for richer context:
+
+```python
+from synapsekit import SentenceWindowRetriever
+
+swr = SentenceWindowRetriever(
+    retriever=retriever,
+    window_size=2,  # Include 2 sentences before and after the match
+)
+
+# Add full documents — they're split into sentences automatically
+await swr.add_documents(["Full document text here. With multiple sentences. And more."])
+
+# Retrieve — matched sentences are expanded with surrounding context
+results = await swr.retrieve("query", top_k=3)
+```
+
+The process:
+1. Documents are split into individual sentences
+2. Each sentence is embedded independently for fine-grained matching
+3. At retrieval time, matched sentences are expanded with `window_size` surrounding sentences
+
 ## Parameters
 
 | Parameter | Default | Description |

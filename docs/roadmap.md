@@ -106,15 +106,33 @@ sidebar_position: 99
 - **PowerPoint loader** — `PowerPointLoader` for `.pptx` files
 - 10 LLM providers, 10 document loaders, 415 tests passing
 
-## Phase 7 — Advanced Retrieval & Evaluation 🔜
+## Phase 7 — Tools, Providers & Advanced Retrieval ✅ Done (v0.6.0)
+
+- **Built-in tools** (6 new):
+  - `HTTPRequestTool` — GET/POST/PUT/DELETE/PATCH with aiohttp
+  - `FileWriteTool` — write/append with auto-mkdir
+  - `FileListTool` — list directories with glob patterns, recursive
+  - `DateTimeTool` — current time, parse, format with tz support
+  - `RegexTool` — findall, match, search, replace, split
+  - `JSONQueryTool` — dot-notation path queries on JSON data
+- **LLM providers** (3 new, all OpenAI-compatible):
+  - `OpenRouterLLM` — unified API for 200+ models
+  - `TogetherLLM` — Together AI fast inference
+  - `FireworksLLM` — Fireworks AI optimized serving
+- **Advanced retrieval** (2 new):
+  - `ContextualRetriever` — Anthropic-style contextual retrieval
+  - `SentenceWindowRetriever` — sentence-level embedding with window expansion
+- 13 LLM providers, 11 built-in tools, 12 document loaders, 452 tests passing
+
+## Phase 8 — Evaluation & Multi-modal 🔜
 
 - Multi-modal support (image inputs for vision models)
 - `Evaluator` — faithfulness, relevancy, groundedness
 - RAGAS-style metrics
-- Advanced retrieval: Contextual Retrieval, FLARE, Step-Back Prompting
+- Advanced retrieval: FLARE, Step-Back Prompting
 - Conversation branching and tree-of-thought
 
-## Phase 8 — Platform 🔜
+## Phase 9 — Platform 🔜
 
 - Local observability UI (LangSmith-style, open source)
 - Streaming UI helpers — SSE + WebSocket for FastAPI

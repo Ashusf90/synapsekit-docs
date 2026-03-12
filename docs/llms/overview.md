@@ -57,6 +57,9 @@ See [Caching & Retries](/docs/llms/caching-retries) for details on response cach
 | Azure OpenAI | `AzureOpenAILLM` | `pip install synapsekit[openai]` | `"azure"` |
 | Groq | `GroqLLM` | `pip install synapsekit[groq]` | `"groq"` |
 | DeepSeek | `DeepSeekLLM` | `pip install synapsekit[openai]` | `"deepseek"` |
+| OpenRouter | `OpenRouterLLM` | `pip install synapsekit[openai]` | `"openrouter"` |
+| Together AI | `TogetherLLM` | `pip install synapsekit[openai]` | `"together"` |
+| Fireworks AI | `FireworksLLM` | `pip install synapsekit[openai]` | `"fireworks"` |
 
 ## Auto-detection
 
@@ -70,6 +73,7 @@ The `RAG` facade auto-detects the provider from the model name:
 | `mistral-*`, `open-mistral-*` | `mistral` |
 | `deepseek-*` | `deepseek` |
 | `llama-*`, `mixtral-*`, `gemma-*` | `groq` |
+| `*/...` (contains `/`) | `openrouter` |
 | everything else | `openai` |
 
 Override with the `provider=` argument:
