@@ -124,7 +124,7 @@ sidebar_position: 99
   - `SentenceWindowRetriever` — sentence-level embedding with window expansion
 - 13 LLM providers, 11 built-in tools, 12 document loaders, 452 tests passing
 
-## Phase 7.1 — Graph Power-ups & Advanced Retrieval (v0.6.1)
+## Phase 7.1 — Graph Power-ups & Advanced Retrieval ✅ Done (v0.6.1)
 
 - **Graph: Human-in-the-Loop** — `GraphInterrupt` exception pauses execution for human review; `InterruptState` holds interrupt details; `resume(updates=...)` applies human edits and continues
 - **Graph: Subgraphs** — `subgraph_node(compiled_graph, input_mapping, output_mapping)` nests a `CompiledGraph` as a node in a parent graph
@@ -134,7 +134,7 @@ sidebar_position: 99
 - **Retrieval: CrossEncoderReranker** — reranks retrieval results with cross-encoder models for higher precision (`pip install synapsekit[semantic]`)
 - **Memory: HybridMemory** — sliding window of recent messages + LLM summary of older messages for token-efficient long conversations
 
-## Phase 7.2 — Retrieval Strategies, Memory & Tools (v0.6.2)
+## Phase 7.2 — Retrieval Strategies, Memory & Tools ✅ Done (v0.6.2)
 
 - **Retrieval: CRAGRetriever** — Corrective RAG: grades retrieved docs for relevance, rewrites query and retries when too few are relevant
 - **Retrieval: QueryDecompositionRetriever** — breaks complex queries into sub-queries, retrieves for each, deduplicates
