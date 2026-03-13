@@ -134,6 +134,18 @@ sidebar_position: 99
 - **Retrieval: CrossEncoderReranker** — reranks retrieval results with cross-encoder models for higher precision (`pip install synapsekit[semantic]`)
 - **Memory: HybridMemory** — sliding window of recent messages + LLM summary of older messages for token-efficient long conversations
 
+## Phase 7.2 — Retrieval Strategies, Memory & Tools (v0.6.2)
+
+- **Retrieval: CRAGRetriever** — Corrective RAG: grades retrieved docs for relevance, rewrites query and retries when too few are relevant
+- **Retrieval: QueryDecompositionRetriever** — breaks complex queries into sub-queries, retrieves for each, deduplicates
+- **Retrieval: ContextualCompressionRetriever** — compresses retrieved documents to only relevant excerpts using an LLM
+- **Retrieval: EnsembleRetriever** — fuses results from multiple retrievers using weighted Reciprocal Rank Fusion
+- **Memory: SQLiteConversationMemory** — persistent chat history in SQLite, multi-conversation support, optional sliding window
+- **Memory: SummaryBufferMemory** — token-budget-aware memory that progressively summarizes older messages
+- **Tools: HumanInputTool** — pauses agent execution to ask the user a question (custom sync/async input functions)
+- **Tools: WikipediaTool** — searches and fetches Wikipedia article summaries via REST API, no extra deps
+- 13 providers, 13 tools, 12 loaders, 10 retrieval strategies, 4 memory backends, 512 tests passing
+
 ## Phase 8 — Evaluation & Multi-modal 🔜
 
 - Multi-modal support (image inputs for vision models)

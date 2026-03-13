@@ -8,6 +8,26 @@ All notable changes to SynapseKit are documented here.
 
 ---
 
+## v0.6.2 — Retrieval Strategies, Memory & Tools
+
+**Retrieval (4 new strategies)**
+- `CRAGRetriever` — Corrective RAG: grades retrieved docs for relevance, rewrites query and retries when too few are relevant
+- `QueryDecompositionRetriever` — breaks complex queries into sub-queries, retrieves for each, deduplicates
+- `ContextualCompressionRetriever` — compresses retrieved documents to only relevant excerpts using an LLM
+- `EnsembleRetriever` — fuses results from multiple retrievers using weighted Reciprocal Rank Fusion
+
+**Memory (2 new backends)**
+- `SQLiteConversationMemory` — persistent chat history in SQLite, multi-conversation support, optional sliding window
+- `SummaryBufferMemory` — token-budget-aware memory that progressively summarizes older messages
+
+**Tools (2 new)**
+- `HumanInputTool` — pauses agent execution to ask the user a question (custom sync/async input functions)
+- `WikipediaTool` — searches and fetches Wikipedia article summaries via REST API, no extra deps
+
+**Stats:** 512 tests, 13 providers, 13 tools, 12 loaders, 10 retrieval strategies, 4 memory backends
+
+---
+
 ## v0.6.1 — Graph Power-ups & Advanced Retrieval
 
 **Graph Workflows**
@@ -26,7 +46,7 @@ All notable changes to SynapseKit are documented here.
 **Memory**
 - `HybridMemory` — sliding window of recent messages + LLM-generated summary of older context
 
-**Stats:** 482 tests, 13 providers, 11 tools, 12 loaders, 6 retrieval strategies
+**Stats:** 482 tests, 13 providers, 11 tools, 12 loaders, 6 retrieval strategies, 2 memory backends
 
 ---
 

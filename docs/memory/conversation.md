@@ -118,3 +118,136 @@ memory.clear()
 | `get_messages_with_summary()` | `list[dict]` | Recent messages + summary of older ones (async) |
 | `format_context()` | `str` | Formatted conversation string with summary (async) |
 | `clear()` | `None` | Clear all messages and summary |
+
+---
+
+## SQLiteConversationMemory
+
+`SQLiteConversationMemory` persists chat history to SQLite. Messages survive process restarts. Supports multiple conversations via `conversation_id` and an optional sliding window.
+
+### Usage
+
+```python
+from synapsekit.memory.sqlite import SQLiteConversationMemory
+
+memory = SQLiteConversationMemory(
+    db_path="chat.db",
+    conversation_id="user-1",
+    window=10,  # Optional: keep only last N message pairs
+)
+
+memory.add("user", "Hello!")
+memory.add("assistant", "Hi there!")
+
+# Messages are persisted to disk
+messages = memory.get_messages()
+# [{"role": "user", "content": "Hello!"}, {"role": "assistant", "content": "Hi there!"}]
+```
+
+### Multiple conversations
+
+```python
+# Each conversation_id has its own history
+user1_memory = SQLiteConversationMemory(db_path="chat.db", conversation_id="user-1")
+user2_memory = SQLiteConversationMemory(db_path="chat.db", conversation_id="user-2")
+
+# List all conversations in the database
+conversations = user1_memory.list_conversations()
+# ["user-1", "user-2"]
+```
+
+### Metadata support
+
+```python
+memory.add("user", "Hello!", metadata={"timestamp": "2026-03-13", "source": "web"})
+
+messages = memory.get_messages()
+# [{"role": "user", "content": "Hello!", "metadata": {"timestamp": "2026-03-13", "source": "web"}}]
+```
+
+### Formatting for prompts
+
+```python
+context = memory.format_context()
+# "User: Hello!\nAssistant: Hi there!"
+```
+
+### Parameters
+
+| Parameter | Default | Description |
+|---|---|---|
+| `db_path` | `"conversations.db"` | Path to the SQLite database file |
+| `conversation_id` | `"default"` | Identifier for this conversation |
+| `window` | `None` | Max message pairs to keep (oldest are deleted) |
+
+### Methods
+
+| Method | Returns | Description |
+|---|---|---|
+| `add(role, content, metadata=None)` | `None` | Append a message |
+| `get_messages()` | `list[dict]` | All messages for this conversation |
+| `format_context()` | `str` | Formatted conversation string |
+| `clear()` | `None` | Delete all messages for this conversation |
+| `list_conversations()` | `list[str]` | All conversation IDs in the database |
+| `close()` | `None` | Close the database connection |
+
+---
+
+## SummaryBufferMemory
+
+`SummaryBufferMemory` tracks approximate token count and progressively summarizes older messages when the buffer exceeds a token limit. Unlike `HybridMemory` (fixed window), this uses token estimation to decide when to summarize.
+
+### Usage
+
+```python
+from synapsekit.memory.summary_buffer import SummaryBufferMemory
+
+memory = SummaryBufferMemory(
+    llm=llm,
+    max_tokens=2000,
+    chars_per_token=4,  # Estimation ratio
+)
+
+memory.add("user", "Hello!")
+memory.add("assistant", "Hi there!")
+
+# When under token limit, returns all messages as-is
+messages = await memory.get_messages()
+
+# When over limit, oldest message pairs are summarized
+# and replaced with a system message containing the summary
+```
+
+### How summarization works
+
+1. When `get_messages()` is called, the buffer's token count is estimated
+2. If under `max_tokens`, all messages are returned unchanged
+3. If over `max_tokens`, the oldest 2 messages are summarized by the LLM
+4. The summary is stored and prepended as a system message
+5. This repeats until the buffer is under the limit (keeping at least 2 messages)
+
+### Formatting for prompts
+
+```python
+# Sync, no summarization — just flattens current state
+context = memory.format_context()
+# "Summary: ...\nUser: latest question\nAssistant: latest answer"
+```
+
+### Parameters
+
+| Parameter | Default | Description |
+|---|---|---|
+| `llm` | — | LLM instance used for summarization |
+| `max_tokens` | `2000` | Token budget for the buffer (must be >= 100) |
+| `chars_per_token` | `4` | Characters per token for estimation |
+
+### Methods
+
+| Method | Returns | Description |
+|---|---|---|
+| `add(role, content)` | `None` | Append a message |
+| `get_messages()` | `list[dict]` | Messages with automatic summarization (async) |
+| `format_context()` | `str` | Formatted string, sync, no summarization |
+| `clear()` | `None` | Clear all messages and summary |
+| `summary` | `str` | The current running summary (property) |

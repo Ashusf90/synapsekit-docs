@@ -65,7 +65,7 @@ InMemoryVectorStore (built-in, `.npz` persistence), ChromaDB, FAISS, Qdrant, Pin
 `ReActAgent` — Thought → Action → Observation loop, works with any LLM.
 `FunctionCallingAgent` — native `tool_calls` / `tool_use` for OpenAI, Anthropic, Gemini, and Mistral.
 `AgentExecutor` — unified runner, picks the right agent from config.
-11 built-in tools: Calculator, PythonREPL, FileRead, FileWrite, FileList, WebSearch, SQL, HTTP, DateTime, Regex, JSONQuery.
+13 built-in tools: Calculator, PythonREPL, FileRead, FileWrite, FileList, WebSearch, SQL, HTTP, DateTime, Regex, JSONQuery, HumanInput, Wikipedia.
 
 → [Agent docs](/docs/agents/overview)
 
@@ -78,13 +78,13 @@ InMemoryVectorStore (built-in, `.npz` persistence), ChromaDB, FAISS, Qdrant, Pin
 
 ### Advanced Retrieval
 
-RAG Fusion, Contextual Retrieval, Sentence Window, Self-Query (LLM-generated filters), Parent Document, Cross-Encoder reranking.
+RAG Fusion, Contextual Retrieval, Sentence Window, Self-Query (LLM-generated filters), Parent Document, Cross-Encoder reranking, CRAG (Corrective RAG), Query Decomposition, Contextual Compression, Ensemble Retrieval.
 
 → [Retrieval docs](/docs/rag/retriever)
 
 ### Memory
 
-`ConversationMemory` (sliding window), `HybridMemory` (window + LLM summary), `TokenTracer` (tokens, latency, cost).
+`ConversationMemory` (sliding window), `HybridMemory` (window + LLM summary), `SQLiteConversationMemory` (persistent SQLite-backed), `SummaryBufferMemory` (token-budget summarization), `TokenTracer` (tokens, latency, cost).
 
 ### Utilities
 
@@ -94,4 +94,4 @@ Output parsers (JSON, Pydantic, List), prompt templates (standard, chat, few-sho
 
 ## Version
 
-Current version: **0.6.1** — see the [Changelog](/docs/changelog) and [Roadmap](/docs/roadmap).
+Current version: **0.6.2** — see the [Changelog](/docs/changelog) and [Roadmap](/docs/roadmap).

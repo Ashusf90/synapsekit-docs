@@ -315,3 +315,55 @@ r = await tool.run(json_data=data, path="users.1")
 r = await tool.run(json_data=data, path="users")
 # r.output → '[{"name": "Alice", ...}, ...]'
 ```
+
+---
+
+## HumanInputTool
+
+Pause agent execution to ask the user a question and get their input.
+
+```python
+from synapsekit import HumanInputTool
+
+# Default: uses Python's built-in input()
+tool = HumanInputTool()
+r = await tool.run(question="What city should I search for?")
+# r.output → user's typed response
+```
+
+### Custom input function
+
+For web apps or non-terminal environments, provide a custom input function:
+
+```python
+# Sync function
+tool = HumanInputTool(input_fn=lambda prompt: my_ui_input(prompt))
+
+# Async function (e.g., waiting for a webhook)
+async def get_web_input(prompt: str) -> str:
+    return await wait_for_user_response(prompt)
+
+tool = HumanInputTool(input_fn=get_web_input)
+```
+
+---
+
+## WikipediaTool
+
+Search and fetch Wikipedia article summaries. Uses the Wikipedia REST API — no API key required, no extra dependencies.
+
+```python
+from synapsekit import WikipediaTool
+
+tool = WikipediaTool(max_chars=4000)
+
+r = await tool.run(query="Python programming language")
+# r.output → "**Python (programming language)**\nhttps://...\n\nPython is a..."
+```
+
+### Multiple results
+
+```python
+r = await tool.run(query="machine learning", max_results=3)
+# Returns up to 3 article summaries, separated by ---
+```

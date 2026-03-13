@@ -267,6 +267,114 @@ for r in results:
 Requires `sentence-transformers`: `pip install synapsekit[semantic]`
 :::
 
+## CRAG (Corrective RAG)
+
+The `CRAGRetriever` implements self-correcting retrieval: it retrieves candidates, grades each for relevance using an LLM, and rewrites the query to retry if too few documents pass the relevance check.
+
+```python
+from synapsekit import CRAGRetriever
+
+crag = CRAGRetriever(
+    retriever=retriever,
+    llm=llm,
+    relevance_threshold=0.5,  # Fraction of docs that must be relevant
+    max_retries=1,            # Max query rewrites before giving up
+)
+
+results = await crag.retrieve("What is quantum computing?", top_k=5)
+```
+
+The process:
+1. Retrieve `top_k` candidates using the base retriever
+2. LLM grades each document as "relevant" or "irrelevant" to the query
+3. If fewer than `relevance_threshold` fraction pass, the LLM rewrites the query
+4. Retry retrieval with the rewritten query (up to `max_retries` times)
+5. Return only the documents that passed relevance grading
+
+### Inspecting grades
+
+Use `retrieve_with_grades()` to see grading details:
+
+```python
+results, info = await crag.retrieve_with_grades("query", top_k=5)
+print(info["relevant_count"])   # Number of relevant docs
+print(info["total_count"])      # Total docs retrieved
+print(info["query_rewritten"])  # Whether the query was rewritten
+print(info["final_query"])      # The (possibly rewritten) query used
+```
+
+## Query Decomposition
+
+The `QueryDecompositionRetriever` uses an LLM to break complex queries into simpler sub-queries, retrieves for each, and deduplicates results:
+
+```python
+from synapsekit import QueryDecompositionRetriever
+
+qdr = QueryDecompositionRetriever(
+    retriever=retriever,
+    llm=llm,
+    num_sub_queries=3,  # Number of sub-queries to generate
+)
+
+results = await qdr.retrieve("Compare quantum and classical computing for ML", top_k=5)
+```
+
+The process:
+1. LLM decomposes the query into `num_sub_queries` simpler sub-queries
+2. Each sub-query is used to retrieve results independently
+3. Results are deduplicated and returned
+
+### Inspecting sub-queries
+
+```python
+results, sub_queries = await qdr.retrieve_with_sub_queries("query", top_k=5)
+print(sub_queries)  # ["What is quantum computing?", "What is classical computing?", ...]
+```
+
+## Contextual Compression
+
+The `ContextualCompressionRetriever` retrieves documents then uses an LLM to compress each to only the content relevant to the query:
+
+```python
+from synapsekit import ContextualCompressionRetriever
+
+ccr = ContextualCompressionRetriever(
+    retriever=retriever,
+    llm=llm,
+    fetch_k=10,  # Retrieve this many, then compress
+)
+
+results = await ccr.retrieve("What is RAG?", top_k=5)
+```
+
+The process:
+1. Retrieve `fetch_k` candidates using the base retriever
+2. LLM compresses each document, extracting only content relevant to the query
+3. Documents the LLM marks as "NOT_RELEVANT" are filtered out
+4. Top `top_k` compressed results are returned
+
+## Ensemble Retrieval
+
+The `EnsembleRetriever` fuses results from multiple retrievers using weighted Reciprocal Rank Fusion (RRF):
+
+```python
+from synapsekit import EnsembleRetriever
+
+ensemble = EnsembleRetriever(
+    retrievers=[retriever_a, retriever_b],
+    weights=[0.7, 0.3],  # Optional, defaults to equal weights
+    rrf_k=60,            # RRF constant
+)
+
+results = await ensemble.retrieve("What is RAG?", top_k=5)
+```
+
+The process:
+1. Each retriever independently retrieves candidates
+2. Results are scored using weighted RRF: `score = weight / (rrf_k + rank + 1)`
+3. Scores are summed across retrievers for documents appearing in multiple result sets
+4. Final results are sorted by fused score
+
 ## Parameters
 
 ### Retriever
@@ -302,3 +410,36 @@ Requires `sentence-transformers`: `pip install synapsekit[semantic]`
 | `retriever` | — | Base `Retriever` instance |
 | `model` | `"cross-encoder/ms-marco-MiniLM-L-6-v2"` | Cross-encoder model name |
 | `fetch_k` | `20` | Number of initial candidates to retrieve |
+
+### CRAGRetriever
+
+| Parameter | Default | Description |
+|---|---|---|
+| `retriever` | — | Base `Retriever` instance |
+| `llm` | — | LLM for grading and query rewriting |
+| `relevance_threshold` | `0.5` | Min fraction of docs that must be relevant |
+| `max_retries` | `1` | Max query rewrites before returning what we have |
+
+### QueryDecompositionRetriever
+
+| Parameter | Default | Description |
+|---|---|---|
+| `retriever` | — | Base `Retriever` instance |
+| `llm` | — | LLM for query decomposition |
+| `num_sub_queries` | `3` | Number of sub-queries to generate |
+
+### ContextualCompressionRetriever
+
+| Parameter | Default | Description |
+|---|---|---|
+| `retriever` | — | Base `Retriever` instance |
+| `llm` | — | LLM for document compression |
+| `fetch_k` | `10` | Number of candidates to retrieve before compression |
+
+### EnsembleRetriever
+
+| Parameter | Default | Description |
+|---|---|---|
+| `retrievers` | — | List of `Retriever` instances |
+| `weights` | equal | Weight for each retriever in RRF scoring |
+| `rrf_k` | `60` | RRF constant (higher = less aggressive reranking) |
