@@ -197,4 +197,4 @@ context + query → LLM.stream() → tokens
 | [RAG Pipeline](/docs/rag/pipeline) | Full RAG pipeline docs |
 | [Agents](/docs/agents/overview) | ReAct and function calling agents |
 | [Graph Workflows](/docs/graph/overview) | DAG-based async pipelines |
-| [LLM Providers](/docs/llms/overview) | All 9 providers with examples |
+| [LLM Providers](/docs/llms/overview) | All 13 providers with examples |

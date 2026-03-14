@@ -13,7 +13,7 @@ const FEATURES = [
   {
     icon: '🌊',
     title: 'Streaming-first',
-    desc: 'Token-level streaming is the default, not an afterthought. Works identically across all 9 LLM providers.',
+    desc: 'Token-level streaming is the default, not an afterthought. Works identically across all 13 LLM providers.',
   },
   {
     icon: '🪶',
@@ -23,7 +23,7 @@ const FEATURES = [
   {
     icon: '🔌',
     title: 'One interface',
-    desc: '9 LLM providers and 4 vector stores behind the same API. Swap providers without rewriting a single line.',
+    desc: '13 LLM providers and 5 vector stores behind the same API. Swap providers without rewriting a single line.',
   },
   {
     icon: '🧩',
@@ -47,19 +47,19 @@ const NAV_CARDS = [
   {
     icon: '🤖',
     title: 'Agents',
-    desc: 'ReAct loop for any LLM. Native function calling for OpenAI and Anthropic. 5 built-in tools, fully extensible.',
+    desc: 'ReAct loop for any LLM. Native function calling for OpenAI, Anthropic, Gemini, and Mistral. 16 built-in tools, fully extensible.',
     href: '/docs/agents/overview',
   },
   {
     icon: '🔀',
     title: 'Graph Workflows',
-    desc: 'DAG-based async pipelines. Parallel node execution, conditional routing, compile-time validation.',
+    desc: 'DAG-based async pipelines. Parallel execution, conditional routing, typed state, fan-out/fan-in, SSE streaming, event callbacks, human-in-the-loop.',
     href: '/docs/graph/overview',
   },
   {
     icon: '🧠',
     title: 'LLM Providers',
-    desc: 'OpenAI, Anthropic, Ollama, Gemini, Cohere, Mistral, Bedrock — all behind one interface.',
+    desc: 'OpenAI, Anthropic, Ollama, Gemini, Cohere, Mistral, Bedrock, Azure, Groq, DeepSeek, OpenRouter, Together, Fireworks — all behind one interface.',
     href: '/docs/llms/overview',
   },
   {
