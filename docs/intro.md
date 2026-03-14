@@ -65,14 +65,14 @@ InMemoryVectorStore (built-in, `.npz` persistence), ChromaDB, FAISS, Qdrant, Pin
 `ReActAgent` — Thought → Action → Observation loop, works with any LLM.
 `FunctionCallingAgent` — native `tool_calls` / `tool_use` for OpenAI, Anthropic, Gemini, and Mistral.
 `AgentExecutor` — unified runner, picks the right agent from config.
-13 built-in tools: Calculator, PythonREPL, FileRead, FileWrite, FileList, WebSearch, SQL, HTTP, DateTime, Regex, JSONQuery, HumanInput, Wikipedia.
+16 built-in tools: Calculator, PythonREPL, FileRead, FileWrite, FileList, WebSearch, SQL, HTTP, DateTime, Regex, JSONQuery, HumanInput, Wikipedia, Summarization, SentimentAnalysis, Translation.
 
 → [Agent docs](/docs/agents/overview)
 
 ### Graph Workflows
 
-`StateGraph` — fluent graph builder with compile-time validation, optional cycle support, and configurable step limits.
-`CompiledGraph` — wave-based async executor. Parallel nodes via `asyncio.gather`. Conditional routing, checkpointing, human-in-the-loop interrupts, subgraphs, token-level streaming, and Mermaid export.
+`StateGraph` — fluent graph builder with compile-time validation, optional cycle support, typed state with reducers, and configurable step limits.
+`CompiledGraph` — wave-based async executor. Parallel nodes via `asyncio.gather`. Conditional routing, checkpointing, human-in-the-loop interrupts, subgraphs, fan-out/fan-in, SSE streaming, event callbacks, token-level streaming, and Mermaid export.
 
 → [Graph docs](/docs/graph/overview)
 
@@ -94,4 +94,4 @@ Output parsers (JSON, Pydantic, List), prompt templates (standard, chat, few-sho
 
 ## Version
 
-Current version: **0.6.2** — see the [Changelog](/docs/changelog) and [Roadmap](/docs/roadmap).
+Current version: **0.6.3** — see the [Changelog](/docs/changelog) and [Roadmap](/docs/roadmap).

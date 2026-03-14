@@ -61,7 +61,7 @@ Entry node
   END
 ```
 
-Nodes in the same wave have no dependencies between them and execute in parallel. State is merged (via `dict.update`) after each wave.
+Nodes in the same wave have no dependencies between them and execute in parallel. State is merged after each wave — using `dict.update` by default, or per-field reducers if a `TypedState` schema is provided.
 
 ## Routing with conditions
 
@@ -164,6 +164,89 @@ async for event in compiled.stream_tokens({"input": "Tell me about RAG"}):
 ```
 
 -> [Token streaming docs](/docs/graph/nodes#token-streaming)
+
+## Typed State with Reducers
+
+Use `TypedState` and `StateField` to define per-field reducers for safe parallel merge:
+
+```python
+from synapsekit import StateGraph
+from synapsekit.graph.state import StateField, TypedState
+
+schema = TypedState(fields={
+    "messages": StateField(default=list, reducer=lambda cur, new: cur + new),
+    "count": StateField(default=int, reducer=lambda cur, new: cur + new),
+    "result": StateField(default=str),  # last-write-wins (no reducer)
+})
+
+graph = StateGraph(state_schema=schema)
+```
+
+Without a reducer, the default `dict.update()` behavior applies (last write wins). With a reducer, concurrent node outputs are safely merged.
+
+## Fan-Out / Fan-In
+
+Run multiple subgraphs in parallel and collect or merge their results:
+
+```python
+from synapsekit import fan_out_node
+
+fan = fan_out_node(
+    subgraphs=[compiled_a, compiled_b, compiled_c],
+    input_mappings=[{"query": "input"}, {"query": "input"}, {"query": "input"}],
+    output_key="results",
+)
+graph.add_node("parallel", fan)
+```
+
+With a custom merge function:
+
+```python
+def merge(results):
+    return {"combined": " | ".join(r["output"] for r in results)}
+
+fan = fan_out_node(subgraphs=[sub_a, sub_b], merge_fn=merge)
+```
+
+## SSE Streaming
+
+Stream graph execution as Server-Sent Events for HTTP responses:
+
+```python
+from synapsekit import sse_stream
+
+async for sse in sse_stream(compiled, {"input": "hello"}):
+    yield sse  # "event: node_complete\ndata: {...}\n\n"
+```
+
+Works with FastAPI/Starlette `StreamingResponse`:
+
+```python
+from starlette.responses import StreamingResponse
+
+async def endpoint(request):
+    return StreamingResponse(
+        sse_stream(compiled, {"input": "hello"}),
+        media_type="text/event-stream",
+    )
+```
+
+## Event Callbacks
+
+Register callbacks for monitoring graph execution:
+
+```python
+from synapsekit import EventHooks
+
+hooks = EventHooks()
+hooks.on_node_start(lambda e: print(f"Starting {e.node}"))
+hooks.on_node_complete(lambda e: print(f"Done {e.node}"))
+hooks.on_wave_start(lambda e: print(f"Wave {e.data['step']}"))
+
+result = await compiled.run(state, hooks=hooks)
+```
+
+Supports both sync and async callbacks. Available events: `node_start`, `node_complete`, `wave_start`, `wave_complete`, `error`.
 
 ## What's validated at compile time
 

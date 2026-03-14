@@ -367,3 +367,63 @@ r = await tool.run(query="Python programming language")
 r = await tool.run(query="machine learning", max_results=3)
 # Returns up to 3 article summaries, separated by ---
 ```
+
+---
+
+## SummarizationTool
+
+Summarize text using an LLM. Supports concise, bullet point, and detailed styles.
+
+```python
+from synapsekit import SummarizationTool
+
+tool = SummarizationTool(llm=llm)
+
+# Concise summary (default)
+r = await tool.run(text="Long article text here...", max_sentences=3)
+# r.output → "A concise 3-sentence summary."
+
+# Bullet points
+r = await tool.run(text="Long text...", style="bullet_points", max_sentences=5)
+# r.output → "- Point 1\n- Point 2\n..."
+
+# Detailed
+r = await tool.run(text="Long text...", style="detailed")
+```
+
+---
+
+## SentimentAnalysisTool
+
+Analyze the sentiment of text using an LLM.
+
+```python
+from synapsekit import SentimentAnalysisTool
+
+tool = SentimentAnalysisTool(llm=llm)
+
+r = await tool.run(text="I love this product! It's amazing.")
+# r.output → "Sentiment: positive\nConfidence: high\nExplanation: ..."
+```
+
+Returns three lines: sentiment (positive/negative/neutral/mixed), confidence (high/medium/low), and a one-sentence explanation.
+
+---
+
+## TranslationTool
+
+Translate text between languages using an LLM.
+
+```python
+from synapsekit import TranslationTool
+
+tool = TranslationTool(llm=llm)
+
+# Auto-detect source language
+r = await tool.run(text="Hello world!", target_language="Spanish")
+# r.output → "¡Hola mundo!"
+
+# Specify source language
+r = await tool.run(text="Bonjour", target_language="English", source_language="French")
+# r.output → "Hello"
+```

@@ -8,6 +8,26 @@ All notable changes to SynapseKit are documented here.
 
 ---
 
+## v0.6.3 — Typed State, Fan-Out, SSE Streaming & LLM Tools
+
+**Graph Workflows**
+- `TypedState` + `StateField` — typed state with per-field reducers for safe parallel merge
+- `fan_out_node()` — run multiple subgraphs concurrently and merge results
+- `sse_stream()` — stream graph execution as Server-Sent Events for HTTP responses
+- `EventHooks` + `GraphEvent` — register callbacks on node_start, node_complete, wave_start, wave_complete
+
+**LLM Caching**
+- `SemanticCache` — similarity-based cache lookup using embeddings (configurable threshold)
+
+**Tools (3 new, LLM-powered)**
+- `SummarizationTool` — summarize text (concise, bullet points, or detailed styles)
+- `SentimentAnalysisTool` — sentiment analysis with confidence and explanation
+- `TranslationTool` — translate text between languages
+
+**Stats:** 540 tests, 13 providers, 16 tools, 12 loaders, 10 retrieval strategies, 4 memory backends
+
+---
+
 ## v0.6.2 — Retrieval Strategies, Memory & Tools
 
 **Retrieval (4 new strategies)**

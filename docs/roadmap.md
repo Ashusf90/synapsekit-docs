@@ -146,6 +146,18 @@ sidebar_position: 99
 - **Tools: WikipediaTool** — searches and fetches Wikipedia article summaries via REST API, no extra deps
 - 13 providers, 13 tools, 12 loaders, 10 retrieval strategies, 4 memory backends, 512 tests passing
 
+## Phase 7.3 — Typed State, Fan-Out, SSE & LLM Tools ✅ Done (v0.6.3)
+
+- **Graph: TypedState with reducers** — `StateField` with per-field reducers for safe parallel state merging
+- **Graph: fan_out_node()** — run multiple subgraphs concurrently with `asyncio.gather()`, custom merge functions
+- **Graph: SSE streaming** — `sse_stream()` for HTTP Server-Sent Events streaming
+- **Graph: Event callbacks** — `EventHooks` with `on_node_start`, `on_node_complete`, `on_wave_start`, `on_wave_complete`
+- **LLM: SemanticCache** — similarity-based cache lookup using embeddings, configurable threshold
+- **Tools: SummarizationTool** — summarize text with concise, bullet_points, or detailed styles
+- **Tools: SentimentAnalysisTool** — sentiment analysis with confidence and explanation
+- **Tools: TranslationTool** — translate text between languages
+- 13 providers, 16 tools, 12 loaders, 10 retrieval strategies, 4 memory backends, 540 tests passing
+
 ## Phase 8 — Evaluation & Multi-modal 🔜
 
 - Multi-modal support (image inputs for vision models)
