@@ -204,6 +204,45 @@ docs = PowerPointLoader("presentation.pptx").load()
 
 ---
 
+## DocxLoader
+
+Load a Microsoft Word (.docx) file.
+
+```bash
+pip install synapsekit[docx]
+```
+
+```python
+from synapsekit import DocxLoader
+
+docs = DocxLoader("report.docx").load()
+# docs[0].text     → paragraph text joined by newlines
+# docs[0].metadata → {"source": "report.docx"}
+```
+
+---
+
+## MarkdownLoader
+
+Load a Markdown file. Strips YAML frontmatter by default.
+
+```bash
+# No extra install needed
+```
+
+```python
+from synapsekit import MarkdownLoader
+
+docs = MarkdownLoader("README.md").load()
+# docs[0].text     → markdown content (frontmatter stripped)
+# docs[0].metadata → {"source": "README.md"}
+
+# Keep frontmatter
+docs = MarkdownLoader("README.md", strip_frontmatter=False).load()
+```
+
+---
+
 ## Loading into the RAG facade
 
 All loaders return `List[Document]`, which you can pass directly to `add_documents()`:
