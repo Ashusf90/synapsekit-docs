@@ -375,6 +375,40 @@ The process:
 3. Scores are summed across retrievers for documents appearing in multiple result sets
 4. Final results are sorted by fused score
 
+## HyDE (Hypothetical Document Embeddings)
+
+The `HyDERetriever` generates a hypothetical answer to the query using an LLM, then uses that hypothetical answer as the search query. This often improves retrieval for complex or abstract questions because the hypothetical answer is closer in embedding space to relevant documents than the original question.
+
+```python
+from synapsekit import HyDERetriever
+
+hyde = HyDERetriever(
+    retriever=retriever,
+    llm=llm,
+)
+
+results = await hyde.retrieve("What is quantum entanglement?", top_k=5)
+```
+
+The process:
+1. The LLM generates a hypothetical passage that would answer the query
+2. The hypothetical passage is used as the search query (instead of the original question)
+3. Results are retrieved using the hypothetical passage, which is often closer to relevant documents in embedding space
+
+### Custom prompt template
+
+Override the default prompt to control how hypothetical answers are generated:
+
+```python
+hyde = HyDERetriever(
+    retriever=retriever,
+    llm=llm,
+    prompt_template="Write a short paragraph answering: {query}",
+)
+```
+
+The template must include `{query}` as a placeholder for the user's question.
+
 ## Parameters
 
 ### Retriever
@@ -385,6 +419,14 @@ The process:
 | `use_bm25` | `False` | Enable BM25 reranking |
 | `bm25_weight` | `0.3` | Weight for BM25 score in hybrid ranking |
 | `metadata_filter` | `None` | Filter by metadata key-value pairs |
+
+### HyDERetriever
+
+| Parameter | Default | Description |
+|---|---|---|
+| `retriever` | — | Base `Retriever` instance |
+| `llm` | — | LLM for generating hypothetical answers |
+| `prompt_template` | built-in | Custom prompt (must include `{query}`) |
 
 ### SelfQueryRetriever
 

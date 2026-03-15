@@ -54,9 +54,9 @@ InMemoryVectorStore (built-in, `.npz` persistence), ChromaDB, FAISS, Qdrant, Pin
 
 → [Vector store docs](/docs/rag/vector-stores)
 
-### 12 document loaders
+### 14 document loaders
 
-`TextLoader`, `StringLoader`, `PDFLoader`, `HTMLLoader`, `CSVLoader`, `JSONLoader`, `DirectoryLoader`, `WebLoader`, `ExcelLoader`, `PowerPointLoader`, plus contextual and sentence-window strategies.
+`TextLoader`, `StringLoader`, `PDFLoader`, `HTMLLoader`, `CSVLoader`, `JSONLoader`, `DirectoryLoader`, `WebLoader`, `ExcelLoader`, `PowerPointLoader`, `DocxLoader`, `MarkdownLoader`, plus contextual and sentence-window strategies.
 
 → [Loader docs](/docs/rag/loaders)
 
@@ -65,7 +65,7 @@ InMemoryVectorStore (built-in, `.npz` persistence), ChromaDB, FAISS, Qdrant, Pin
 `ReActAgent` — Thought → Action → Observation loop, works with any LLM.
 `FunctionCallingAgent` — native `tool_calls` / `tool_use` for OpenAI, Anthropic, Gemini, and Mistral.
 `AgentExecutor` — unified runner, picks the right agent from config.
-16 built-in tools: Calculator, PythonREPL, FileRead, FileWrite, FileList, WebSearch, SQL, HTTP, DateTime, Regex, JSONQuery, HumanInput, Wikipedia, Summarization, SentimentAnalysis, Translation.
+19 built-in tools: Calculator, PythonREPL, FileRead, FileWrite, FileList, WebSearch, SQL, HTTP, DateTime, Regex, JSONQuery, HumanInput, Wikipedia, Summarization, SentimentAnalysis, Translation, WebScraper, Shell, SQLSchemaInspection.
 
 → [Agent docs](/docs/agents/overview)
 
@@ -78,7 +78,7 @@ InMemoryVectorStore (built-in, `.npz` persistence), ChromaDB, FAISS, Qdrant, Pin
 
 ### Advanced Retrieval
 
-RAG Fusion, Contextual Retrieval, Sentence Window, Self-Query (LLM-generated filters), Parent Document, Cross-Encoder reranking, CRAG (Corrective RAG), Query Decomposition, Contextual Compression, Ensemble Retrieval.
+RAG Fusion, Contextual Retrieval, Sentence Window, Self-Query (LLM-generated filters), Parent Document, Cross-Encoder reranking, CRAG (Corrective RAG), Query Decomposition, Contextual Compression, Ensemble Retrieval, HyDE (Hypothetical Document Embeddings).
 
 → [Retrieval docs](/docs/rag/retriever)
 
@@ -94,4 +94,4 @@ Output parsers (JSON, Pydantic, List), prompt templates (standard, chat, few-sho
 
 ## Version
 
-Current version: **0.6.3** — see the [Changelog](/docs/changelog) and [Roadmap](/docs/roadmap).
+Current version: **0.6.4** — see the [Changelog](/docs/changelog) and [Roadmap](/docs/roadmap).

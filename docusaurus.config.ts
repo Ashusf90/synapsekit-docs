@@ -50,8 +50,8 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     announcementBar: {
-      id: 'v063',
-      content: '🎉 SynapseKit v0.6.3 — Typed State with Reducers, Fan-Out/Fan-In, SSE Streaming, Event Callbacks, Semantic Cache, and 3 new LLM tools. <a href="/synapsekit-docs/docs/roadmap">See what\'s new →</a>',
+      id: 'v064',
+      content: '🎉 SynapseKit v0.6.4 — DocxLoader, MarkdownLoader, HyDE Retriever, ShellTool, SQLSchemaInspectionTool, FilesystemLLMCache, JSONFileCheckpointer. <a href="/synapsekit-docs/docs/roadmap">See what\'s new →</a>',
       backgroundColor: '#161b22',
       textColor: '#8b949e',
       isCloseable: true,
@@ -78,7 +78,7 @@ const config: Config = {
         {
           type: 'html',
           position: 'left',
-          value: '<span class="navbar__version">v0.6.3</span>',
+          value: '<span class="navbar__version">v0.6.4</span>',
         },
         {
           href: 'https://github.com/SynapseKit/SynapseKit',
